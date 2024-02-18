@@ -4,6 +4,3 @@
 [submodule "OpenGL_startup_project/vendor/glm"]
 	path = OpenGL_startup_project/vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "OpenGL_startup_project/vendor/imgui"]
-	path = OpenGL_startup_project/vendor/imgui
-	url = https://github.com/ocornut/imgui.git
