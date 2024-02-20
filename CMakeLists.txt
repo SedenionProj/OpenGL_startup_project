@@ -6,9 +6,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Include directories
-include_directories(include)
-
 # Add source files
 file(GLOB_RECURSE SOURCES 
     "OpenGL_startup_project/source/*.cpp"
@@ -18,7 +15,7 @@ file(GLOB_RECURSE SOURCES
     )
 
 # Add executable
-add_executable(OpenGL_startup_project ${SOURCES})
+add_library(OpenGL_startup_project ${SOURCES})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
 
@@ -40,8 +37,6 @@ target_include_directories(OpenGL_startup_project PRIVATE OpenGL_startup_project
 
 # imgui
 target_include_directories(OpenGL_startup_project PRIVATE OpenGL_startup_project/vendor/imgui)
-#add_executable(OpenGL_startup_project OpenGL_startup_project/vendor/imgui/*.cpp)
-
 
 
 set_property(
