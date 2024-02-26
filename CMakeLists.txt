@@ -38,6 +38,9 @@ target_include_directories(OpenGL_startup_project PRIVATE OpenGL_startup_project
 # imgui
 target_include_directories(OpenGL_startup_project PRIVATE OpenGL_startup_project/vendor/imgui)
 
+# freetype
+add_subdirectory(OpenGL_startup_project/vendor/freetype)
+target_link_libraries(OpenGL_startup_project freetype)
 
 set_property(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

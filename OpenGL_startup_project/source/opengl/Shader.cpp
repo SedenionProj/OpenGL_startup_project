@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include "stb_image.h"
+//#include "stb_image.h"
 
 void checkCompileErrors(GLuint shader, std::string type);
 
