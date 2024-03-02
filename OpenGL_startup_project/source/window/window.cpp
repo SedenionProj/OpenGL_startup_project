@@ -1,88 +1,110 @@
 #include "window.h"
 
-bool Seden::running = true;
+namespace Seden {
+	bool win::running = true;
+	float currentFrame = glfwGetTime();
+	float lastFrame = 0.0f;
+	float win::dt = glfwGetTime();
+	int win::width = 0;
+	int win::height = 0;
 
-GLFWwindow* Seden::window = nullptr;
+	GLFWwindow* win::window = nullptr;
 
-void Seden::init(int width, int height, const char* title)
-{
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
-	glfwMakeContextCurrent(window);
-	if (window == NULL)
+	void win::init(int width, int height, const char* title)
 	{
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+		window = glfwCreateWindow(width, height, title, NULL, NULL);
+		glfwMakeContextCurrent(window);
+		if (window == NULL)
+		{
+			glfwTerminate();
+		}
+
+		gladLoadGL();
+		glViewport(0, 0, width, height);
+	}
+
+	void win::terminate()
+	{
+		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
-	
-	gladLoadGL();
-	glViewport(0, 0, width, height);
-}
 
-void Seden::init(bool)
-{
-	//todo
-}
+	void win::clear()
+	{
+		glfwPollEvents();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
 
-void Seden::terminate()
-{
-	glfwDestroyWindow(window);
-	glfwTerminate();
-}
+	void win::display()
+	{
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+		currentFrame = glfwGetTime();
+		dt = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+	}
 
-void Seden::clear()
-{
-	glfwPollEvents();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
+	glm::vec2 win::getResolution()
+	{
+		return glm::vec2(width, height);
+	}
 
-void Seden::display()
-{
-	glfwSwapBuffers(window);
-	glfwPollEvents();
-}
+	float win::getDeltaTime()
+	{
+		return dt;
+	}
 
-bool Seden::isRunning()
-{
-	return !glfwWindowShouldClose(window) && running;
-}
+	GLFWwindow* win::getWindowRef()
+	{
+		return window;
+	}
 
-void Seden::initGui() {
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init();
-	ImGui::StyleColorsDark();
-}
+	bool win::isRunning()
+	{
+		return !glfwWindowShouldClose(window) && running;
+	}
 
-void Seden::clearGui()
-{
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-}
+	void win::initGui() {
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init();
+		ImGui::StyleColorsDark();
+	}
 
-void Seden::drawGui()
-{
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
+	void win::clearGui()
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+	}
 
-void Seden::closeGui()
-{
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-}
+	void win::drawGui()
+	{
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-void Seden::terminateGui()
-{
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+		
+	}
+
+	void win::closeGui()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
+
+	void win::terminateGui()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
 }

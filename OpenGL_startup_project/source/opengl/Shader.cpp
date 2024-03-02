@@ -1,5 +1,4 @@
 #include "Shader.h"
-//#include "stb_image.h"
 
 void checkCompileErrors(GLuint shader, std::string type);
 
@@ -111,7 +110,7 @@ void Shader::setVec2(const std::string& name, const glm::vec2 values) const {
 	glUniform2f(glGetUniformLocation(ID, name.c_str()), values.x, values.y);
 };
 void Shader::setMat4(const std::string& name, const glm::mat4& matrix, const float instance) const {
-	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 };
 
 void checkCompileErrors(GLuint shader, std::string type)
