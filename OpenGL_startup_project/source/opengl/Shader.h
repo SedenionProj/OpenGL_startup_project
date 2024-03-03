@@ -13,7 +13,12 @@ private:
 	unsigned int ID;
 public:
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	Shader() = default;
+
 	~Shader();
+
+	void createShader(const char* vShaderCode, const char* fShaderCode, const char* geometryCode = nullptr);
+
 	void Bind() const;
 	void Unind() const;
 	inline unsigned int getId() const { return ID; }
