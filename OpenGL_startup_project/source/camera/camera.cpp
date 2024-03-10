@@ -24,9 +24,10 @@ namespace Seden {
 
 	// perspective
 
-	PerspectiveCamera::PerspectiveCamera(float m_aspectRatio, glm::vec3 position, float pitch, float yaw)
+	PerspectiveCamera::PerspectiveCamera(float aspectRatio, glm::vec3 position, float pitch, float yaw)
 		: up(glm::vec3(0, 1, 0)), m_pitch(pitch), m_yaw(yaw)
 	{
+		m_aspectRatio = aspectRatio;
 		m_position = position;
 		m_projection = glm::perspective(glm::radians(90.f), m_aspectRatio, 0.1f, 100.f);
 		updateFront();
@@ -35,8 +36,10 @@ namespace Seden {
 
 	void PerspectiveCamera::setRotation(float pitch, float yaw)
 	{
-		pitch = pitch;
-		yaw = yaw;
+		m_pitch = pitch;
+		m_yaw = yaw;
+		updateFront();
+		recalculateViewMatrix();
 	}
 	
 	void PerspectiveCamera::rotate(float pitchVelocity, float yawVelocity)
@@ -77,6 +80,57 @@ namespace Seden {
 	{
 		m_view = glm::lookAt(m_position, m_position + front, up);
 	}
+
+	// LookAt
+
+	LookAtCamera::LookAtCamera(float aspectRatio, glm::vec3 center, float level, float pitch, float yaw)
+		: up(glm::vec3(0, 1, 0)), m_pitch(pitch), m_yaw(yaw), m_center(center)
+	{
+		m_aspectRatio = aspectRatio;
+		m_zoom = level;
+		m_projection = glm::perspective(glm::radians(90.f), m_aspectRatio, 0.1f, 100.f);
+		recalculateViewMatrix();
+	}
+
+	void LookAtCamera::setRotation(float pitch, float yaw)
+	{
+		m_pitch = pitch;
+		m_yaw = yaw;
+		recalculateViewMatrix();
+	}
+
+	void LookAtCamera::setZoom(float level)
+	{
+		m_zoom = level;
+		recalculateViewMatrix();
+	}
+
+	glm::vec2 LookAtCamera::getRotation()
+	{
+		return glm::vec2(m_pitch, m_yaw);
+	}
+
+	float LookAtCamera::getZoom()
+	{
+		return m_zoom;
+	}
+
+	void LookAtCamera::rotate(float pitchVelocity, float yawVelocity)
+	{
+		m_pitch += pitchVelocity;
+		m_yaw += yawVelocity;
+		recalculateViewMatrix();
+	}
+
+	void LookAtCamera::recalculateViewMatrix()
+	{
+		m_position.x = m_zoom * glm::cos(m_yaw) * glm::cos(m_pitch);
+		m_position.y = m_zoom * glm::sin(m_pitch);
+		m_position.z = m_zoom * glm::sin(m_yaw) * glm::cos(m_pitch);
+
+		m_view = glm::lookAt(m_position, m_center, up);
+	}
+
 
 	// orthographic
 
@@ -145,5 +199,7 @@ namespace Seden {
 	{
 		m_projection = glm::ortho(-m_aspectRatio*m_zoom, m_aspectRatio * m_zoom, -m_zoom, m_zoom, -1.f, 1.f);
 	}
+
+	
 
 }

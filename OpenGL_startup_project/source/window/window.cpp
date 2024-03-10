@@ -59,7 +59,7 @@ namespace Seden {
 		dt = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		if (isRecording) {
+		if (m_isRecording) {
 			glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
 			fwrite(image.get(), sizeof(int) * m_width * m_height, 1, ffmpeg);
 		}

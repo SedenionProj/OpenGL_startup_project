@@ -21,13 +21,13 @@ namespace Seden {
 
 	class PerspectiveCamera : public Camera{
 	public:
-		PerspectiveCamera(float m_aspectRatio, glm::vec3 position = glm::vec3(0,0,1), float pitch = 0, float yaw = -glm::pi<float>() / 2.f);
+		PerspectiveCamera(float aspectRatio, glm::vec3 position = glm::vec3(0,0,1), float pitch = 0, float yaw = -glm::pi<float>() / 2.f);
 
 		void setRotation(float pitch, float yaw);
 
 		glm::vec2 getRotation();
 
-		void rotate(float pitch, float yaw);
+		void rotate(float pitchVelocity, float yawVelocity);
 		void moveFront(float velocity);
 		void moveRight(float velocity);
 		void moveUp(float velocity);
@@ -40,6 +40,25 @@ namespace Seden {
 		glm::vec3 up;
 
 		
+	};
+
+	class LookAtCamera : public Camera{
+	public:
+		LookAtCamera(float aspectRatio, glm::vec3 center = glm::vec3(0), float level = 2, float pitch = 0, float yaw = -glm::pi<float>() / 2.f);
+		void setRotation(float pitch, float yaw);
+		void setZoom(float level);
+
+		glm::vec2 getRotation();
+		float getZoom();
+
+		void rotate(float pitchVelocity, float yawVelocity);
+	private:
+		void virtual recalculateViewMatrix();
+		glm::vec3 m_center;
+		float m_zoom = 1.0f;
+		float m_pitch;
+		float m_yaw;
+		glm::vec3 up;
 	};
 
 	class OrthographicCamera : public Camera {
