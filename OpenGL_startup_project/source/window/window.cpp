@@ -58,11 +58,6 @@ namespace Seden {
 		currentFrame = glfwGetTime();
 		dt = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
-		if (m_isRecording) {
-			glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
-			fwrite(image.get(), sizeof(int) * m_width * m_height, 1, ffmpeg);
-		}
 	}
 
 	glm::vec2 win::getResolution()
@@ -73,6 +68,13 @@ namespace Seden {
 	float win::getDeltaTime()
 	{
 		return dt;
+	}
+
+	void win::saveRecordingFrame() {
+		if (m_isRecording) {
+			glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+			fwrite(image.get(), sizeof(int) * m_width * m_height, 1, ffmpeg);
+		}
 	}
 
 	void win::startRecording(const std::string& path, int fps)

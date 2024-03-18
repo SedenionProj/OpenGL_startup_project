@@ -26,6 +26,7 @@ namespace Seden {
 		static float getDeltaTime();
 
 		static void startRecording(const std::string& path, int fps = 60);
+		static void saveRecordingFrame();
 		static void stopRecording();
 		static bool isRecording();
 
