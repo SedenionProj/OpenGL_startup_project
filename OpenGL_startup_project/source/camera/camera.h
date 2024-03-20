@@ -26,6 +26,7 @@ namespace Seden {
 		void setRotation(float pitch, float yaw);
 
 		glm::vec2 getRotation();
+		glm::vec3 getFront();
 
 		void rotate(float pitchVelocity, float yawVelocity);
 		void moveFront(float velocity);

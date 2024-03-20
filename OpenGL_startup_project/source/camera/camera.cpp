@@ -70,6 +70,11 @@ namespace Seden {
 		return glm::vec2(m_pitch, m_yaw);
 	}
 
+	glm::vec3 PerspectiveCamera::getFront()
+	{
+		return front;
+	}
+
 	void PerspectiveCamera::updateFront()
 	{
 		front.x = glm::cos(m_yaw) * glm::cos(m_pitch);
