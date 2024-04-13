@@ -7,6 +7,8 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <tuple>
+
 
 class Shader {
 private:
@@ -17,6 +19,7 @@ public:
 
 	~Shader();
 
+	std::tuple<std::string, std::string, std::string> getShaderCode(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 	void createShader(const char* vShaderCode, const char* fShaderCode, const char* geometryCode = nullptr);
 
 	void Bind() const;

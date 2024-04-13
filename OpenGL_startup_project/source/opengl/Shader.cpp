@@ -5,47 +5,16 @@ void checkCompileErrors(GLuint shader, std::string type);
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
-	std::string vertexCode;
-	std::string fragmentCode;
-	std::string geometryCode;
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-	std::ifstream gShaderFile;
-	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	try
-	{
-		vShaderFile.open(vertexPath);
-		fShaderFile.open(fragmentPath);
-		std::stringstream vShaderStream, fShaderStream;
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
-		vShaderFile.close();
-		fShaderFile.close();
-		vertexCode = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
-		if (geometryPath != nullptr)
-		{
-			gShaderFile.open(geometryPath);
-			std::stringstream gShaderStream;
-			gShaderStream << gShaderFile.rdbuf();
-			gShaderFile.close();
-			geometryCode = gShaderStream.str();
-		}
-	}
-	catch (std::ifstream::failure& e)
-	{
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
-	}
-	const char* vShaderCode = vertexCode.c_str();
-	const char* fShaderCode = fragmentCode.c_str();
+	auto shaders = getShaderCode(vertexPath, fragmentPath, geometryPath);
+
+	const char* vShaderCode = std::get<0>(shaders).c_str();
+	const char* fShaderCode = std::get<1>(shaders).c_str();
 	const char* gShaderCode = nullptr;
 	if (geometryPath != nullptr)
 	{
-		const char* gShaderCode = geometryCode.c_str();
+		const char* gShaderCode = std::get<2>(shaders).c_str();
 	}
-	
+
 	createShader(vShaderCode, fShaderCode, gShaderCode);
 }
 
@@ -85,6 +54,45 @@ void Shader::createShader(const char* vShaderCode, const char* fShaderCode, cons
 
 Shader::~Shader() {
 	glDeleteProgram(ID);
+}
+
+std::tuple<std::string, std::string, std::string> Shader::getShaderCode(const char* vertexPath, const char* fragmentPath, const char* geometryPath /*= nullptr*/)
+{
+	std::string vertexCode;
+	std::string fragmentCode;
+	std::string geometryCode;
+	std::ifstream vShaderFile;
+	std::ifstream fShaderFile;
+	std::ifstream gShaderFile;
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
+	{
+		vShaderFile.open(vertexPath);
+		fShaderFile.open(fragmentPath);
+		std::stringstream vShaderStream, fShaderStream;
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
+		vShaderFile.close();
+		fShaderFile.close();
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+		if (geometryPath != nullptr)
+		{
+			gShaderFile.open(geometryPath);
+			std::stringstream gShaderStream;
+			gShaderStream << gShaderFile.rdbuf();
+			gShaderFile.close();
+			geometryCode = gShaderStream.str();
+		}
+	}
+	catch (std::ifstream::failure& e)
+	{
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+	}
+	
+	return std::make_tuple(vertexCode, fragmentCode, geometryCode);
 }
 
 void Shader::Bind() const{
